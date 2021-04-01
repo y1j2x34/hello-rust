@@ -43,6 +43,7 @@ mod tests {
         )
     }
     #[test]
+    #[ignore]
     fn greeting_contains_name2() {
         let result = greeting("Carol");
         assert!(
@@ -56,6 +57,7 @@ mod tests {
         Guess::new(200);
     }
     #[test]
+    #[ignore] // 排除
     fn another() {
         panic!("Make this test fail")
     }
