@@ -1,5 +1,6 @@
 fn main() {
     println!("{}", longest("a","bc"));
+    // println!("{}", dangling());
 }
 /*
 
@@ -25,3 +26,8 @@ fn longest<'b>(x: &'b str, y: &'b str) -> &'b str {
         y
     }
 }
+
+// fn dangling() -> &String {
+//     let s = String::from("Hello");
+//     &s
+// }
