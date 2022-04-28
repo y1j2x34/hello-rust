@@ -1,5 +1,7 @@
 // #![feature(trace_macros)]
 // trace_macros!(true);
+#![recursion_limit = "10000000"]
+
 #![allow(dead_code)]
 #![allow(unused_macros)]
 
@@ -54,9 +56,15 @@ macro_rules! count {
 }
 
 macro_rules! recurrence {
+    (@count ) => {
+        0usize
+    };
+    (@count $h: expr $(,$tail: expr)*) => {
+        1usize + recurrence!(@count $($tail),*)
+    };
     [items:$ty:ty => $($inits:expr),*; ... ; $seq:ident[$idx: ident] = $recur: expr] => {{
 
-        const INIT_COUNT: usize = count!($($inits),*);
+        const INIT_COUNT: usize = recurrence!(@count $($inits),*);
 
         #[derive(Debug)]
         struct Recurrence {
@@ -118,6 +126,15 @@ macro_rules! var {
     }
 }
 
+macro_rules! min {
+    ($a: expr) => { $a };
+    ($a: expr, $($tail: tt)*) => {
+        std::cmp::min(
+            $a, min!($($tail)*)
+        )
+    }
+}
+
 fn main() {
     // struct A {
     //     mem: [i32; 4]
@@ -128,9 +145,11 @@ fn main() {
     // a.mem = [2, 3,4,5];
     // println!("{:?}", a.mem);
 
+    // min!(2,7,1,9,3,12);
+
     let f = recurrence!(items:f64 => 0.0,1.0,3.0,4.0; ... ; f[n] = f[n-1] + f[n-2] + f[n-3] + f[n-4]);
 
-    for (index, val) in f.take(2000).enumerate() {
+    for (index, val) in f.take(100).enumerate() {
         println!("[{}] = {}", index, val);
     }
 
